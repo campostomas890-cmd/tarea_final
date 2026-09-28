@@ -3,14 +3,20 @@ var router = express.Router();
 var path = require('path');
 var programadoresModel = require('../../models/programadoresModel');
 
-// 1. Listar (Read)
+// Listar novedades
 router.get('/', async function (req, res, next) {
   try {
-    var programadores = await programadoresModel.getProgramadores();
+    var query = req.query.q ? req.query.q.trim() : '';
+    var programadores = query
+      ? await programadoresModel.searchProgramadores(query)
+      : await programadoresModel.getProgramadores();
+
     res.render('admin/novedades', {
       layout: 'admin/layout',
       programadores,
-      usuario: req.session.nombre
+      usuario: req.session.nombre,
+      is_search: query !== '',
+      q: query
     });
   } catch (error) {
     console.log(error);
@@ -18,7 +24,7 @@ router.get('/', async function (req, res, next) {
   }
 });
 
-// 2. Agregar (Create)
+// Agregar novedad
 router.post('/agregar', async function (req, res, next) {
   try {
     if (req.body.titulo && req.body.subtitulo && req.body.cuerpo) {
@@ -57,7 +63,7 @@ router.post('/agregar', async function (req, res, next) {
   }
 });
 
-// 3. Editar - cargar formulario de edición
+// Cargar formulario de edición
 router.get('/editar/:id', async function (req, res, next) {
   try {
     var id = req.params.id;
@@ -76,12 +82,12 @@ router.get('/editar/:id', async function (req, res, next) {
   }
 });
 
-// 3. Editar - procesar actualización (Update)
+// Procesar edición
 router.post('/editar/:id', async function (req, res, next) {
   try {
     var id = req.params.id;
 
-    if (req.body.titulo !== "" && req.body.subtitulo !== "" && req.body.cuerpo !== "") {
+    if (req.body.titulo !== '' && req.body.subtitulo !== '' && req.body.cuerpo !== '') {
       let img_id = req.body.img_id_actual || null;
 
       if (req.files && req.files.img_id) {
@@ -119,7 +125,7 @@ router.post('/editar/:id', async function (req, res, next) {
   }
 });
 
-// 4. Eliminar (Delete)
+// Eliminar novedad
 router.get('/eliminar/:id', async function (req, res, next) {
   try {
     var id = req.params.id;
