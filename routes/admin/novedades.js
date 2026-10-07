@@ -126,7 +126,7 @@ router.post('/editar/:id', async function (req, res, next) {
 });
 
 // Eliminar novedad
-router.get('/eliminar/:id', async function (req, res, next) {
+router.post('/eliminar/:id', async function (req, res, next) {
   try {
     var id = req.params.id;
     await programadoresModel.deleteProgramadorById(id);

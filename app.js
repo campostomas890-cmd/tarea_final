@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var fileUpload = require('express-fileupload');
 var session = require('express-session');
+var crypto = require('crypto');
 
 // Importación de enrutadores
 var indexRouter = require('./routes/index');
@@ -19,24 +20,17 @@ var app = express();
 
 // 1. Configuración de la sesión (Debe ir antes de las rutas)
 app.use(session({
-  secret: 'palabrasupersecreta',
-  cookie: { maxAge: null },
-  resave: true,
-  saveUninitialized: true
+  secret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex'),
+  resave: false,
+  saveUninitialized: false
 }));
 
-// 2. Middleware de seguridad (secured)
-var secured = async (req, res, next) => {
-  try {
-    console.log(req.session.id_usuario);
-    if (req.session.id_usuario) {
-      next();
-    } else {
-      res.redirect('/admin/login');
-    }
-  } catch (error) {
-    console.log(error);
+// 2. Middleware de seguridad
+var secured = (req, res, next) => {
+  if (req.session.id_usuario) {
+    return next();
   }
+  return res.redirect('/admin/login');
 };
 
 // 3. Configuración de middlewares globales y lectura de formularios

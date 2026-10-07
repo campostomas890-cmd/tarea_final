@@ -34,15 +34,17 @@ router.post('/', async function(req, res, next) {
             });
         }
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 });
 
 //logout
 router.get('/logout', function(req, res, next) {
-    req.session.destroy();
-    res.render('admin/login', {
-        layout: 'admin/layout'
+    req.session.destroy(function(error) {
+        if (error) {
+            return next(error);
+        }
+        return res.redirect('/admin/login');
     });
 });
 

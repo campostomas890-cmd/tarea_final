@@ -71,7 +71,6 @@ CREATE TABLE `usuarioycontraseñaprogramadores` (
 
 LOCK TABLES `usuarioycontraseñaprogramadores` WRITE;
 /*!40000 ALTER TABLE `usuarioycontraseñaprogramadores` DISABLE KEYS */;
-INSERT INTO `usuarioycontraseñaprogramadores` VALUES (1,'123456','e10adc3949ba59abbe56e057f20f883e');
 /*!40000 ALTER TABLE `usuarioycontraseñaprogramadores` ENABLE KEYS */;
 UNLOCK TABLES;
 
